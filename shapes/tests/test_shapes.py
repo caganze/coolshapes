@@ -1,5 +1,5 @@
 import numpy as np
-from shapes import *
+from shapes import Box, RotatedBox, Selector
 import numpy as np
 import pandas as pd
 import pytest

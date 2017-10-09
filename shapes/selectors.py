@@ -5,6 +5,9 @@ Created on Mon Jul 17 17:06:57 2017
 
 @author: caganze
 """
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 
 class Selector(object):
 	"""

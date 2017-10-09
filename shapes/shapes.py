@@ -24,7 +24,6 @@ import functools
 from matplotlib.patches import Ellipse
 import math
 
-from .selector import*
 
 class Shape(object):
 	
