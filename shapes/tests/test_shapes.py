@@ -1,5 +1,5 @@
 import numpy as np
-from wisps import Box, Selector,RotatedBox
+from shapes import *
 import numpy as np
 import pandas as pd
 import pytest
