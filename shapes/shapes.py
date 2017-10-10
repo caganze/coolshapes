@@ -14,7 +14,7 @@ import random as rd
 from itertools import combinations
 from functools import reduce
 import pandas as pd
-import statsmodels.nonparametric.kernel_density as kde
+#import statsmodels.nonparametric.kernel_density as kde
 from matplotlib.path import Path
 
 from abc import ABCMeta
