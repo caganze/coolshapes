@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 
 import matplotlib.patches as patches
 import random as rd
-from itertools import combinations
-from functools import reduce
+#from itertools import combinations
+#from functools import reduce
 import pandas as pd
 #import statsmodels.nonparametric.kernel_density as kde
 from matplotlib.path import Path
@@ -20,9 +20,11 @@ from matplotlib.path import Path
 from abc import ABCMeta
 from abc import abstractproperty
 from decimal import Decimal
-import functools 
+#import functools 
 from matplotlib.patches import Ellipse
 import math
+
+import copy
 
 
 class Shape(object):
@@ -60,15 +62,39 @@ class Shape(object):
 	def spath(self):
 		return Path(self.vertices, self.codes)
 	
-
-	def select(self, df):
-		#print (df)
-		if df.empty:
-			raise ValueError('Please pass some data lol')
+	def _select(self, data):
+		"""
+		this only works with numpy array for convenience
+		"""
 		if self.__repr__ =='oval':
-			return  df[self.ellipse.contains_points(list(df.apply(tuple, axis=1)), transform=None, radius=0.0)]
+			bools=self.ellipse.contains_points(list(map(tuple, data.T)), transform=None, radius=0.0) 
 		if not self.__repr__=='oval':
-			return df[self.spath.contains_points(list(df.apply(tuple, axis=1)), transform=None, radius=0.0)]
+			bools=self.spath.contains_points(list(map(tuple, data.T)), transform=None, radius=0.0)
+			
+		selected_data=np.array([data[0][bools], data[1][bools]])
+
+		return selected_data, bools
+
+	def select(self, data):
+		"""
+		 selects a list of points inside shape
+		 If data is an array, returns array
+		 If data is a pandas dataframe, returns dataframe
+		"""
+		sels=None
+		if len(data)==0:
+			raise ValueError('Please pass some data lol')
+			
+		if isinstance(data, pd.DataFrame):
+			data.columns=['x', 'y']
+			bools=self._select(np.array([data['x'].as_matrix(), data['y'].as_matrix()]))[1]
+			sels=data[bools]
+
+		if (len(data) !=0) and (not isinstance(data, pd.DataFrame)):
+			sels=self._select(data)[0]
+			
+		return sels
+		
 
 
 		
@@ -90,6 +116,7 @@ class Box(Shape):
 		self._pol=None
 		self._vertices=None
 		self._angle=None
+		self._coeffs=None
 		
 	def __repr__(self):
 		return 'box'
@@ -98,10 +125,9 @@ class Box(Shape):
 		if self._data is None:
 			return 0
 		else:
-			return len(self.data)
-	
+			return len(self.data[0])
 
-		
+	
 	@property 
 	def center(self):
 		"""
@@ -168,18 +194,17 @@ class Box(Shape):
 
 	@property
 	def data(self):
-		return self._data
+		return np.array(self._data)
 
 	@data.setter
-	def data(self, df):
+	def data(self, input):
 		"""
-		Set box from data using a pandas dataframe, must be a pandas dataframe with columns [x, y]
+		input must be a 2d-numpy array
 		"""
 		if not self._data_type=='contam':
 			#fit a line to the data
-			x=np.array(df.x)
-			y=np.array(df.y)
-			
+			x=input[0]
+			y=input[1]
 			x_max=np.nanmax(x)
 			x_min=np.nanmin(x)
 			
@@ -196,8 +221,9 @@ class Box(Shape):
 			
 			ys=pol([x_min, x_max])
 			
-			scatter= 1.5* np.sqrt(np.sum((y- pol(x))**2)/len(df))
+			scatter= 1.5* np.sqrt(np.sum((y- pol(x))**2)/len(x))
 			
+			#print ('x_max {}  x_min {} scatter {}'.format(x_max, x_min, scatter))
 			ys_above= ys+scatter
 			ys_below=ys-scatter
 			
@@ -208,12 +234,12 @@ class Box(Shape):
 			v3=(x_max,	ys_below[1])
 			
 			self.vertices=[v1, v2, v3, v4, v1]
-			self._data=df
+			self._data=input
 			self._scatter=scatter
 			self._pol=pol
 			self._coeffs=coeffs
 		else:
-			self._data=df
+			self._data=input
 			
 	@property
 	def datatype(self):
@@ -231,20 +257,41 @@ class Box(Shape):
 		"""
 		This is really a completeness or a contamination, based on the data that's passed in
 		"""
-		eff=float(len(self.select(self._data))) /float(len(self._data))
+		eff=float(len(self.select(self.data)[0])) /float(len(self.data[0]))
 		return eff
+	@property
+	def scatter(self):
+		"""
+		the scatter between the data and the center line
+		"""
+		return self._scatter
 	
+	@property
+	def coeffs(self):
+		"""
+		coefficients of the line (slope and y-intercept
+		"""
+		return self._coeffs
+		
 	def contains(self, points):
 		"""
 		If point belongs to this path, it returns true otherwise it returns false
 		points must be a list of tuples
+		INPUT: list of tuples
 		"""
 		#_points=
 		return [self.spath.contains_point(x, transform=None, radius=0.0) for x in points]
 		
 	def rotate(self,  ang, **kwargs):
 	
-		"rotate a box by an angle"
+		"""
+		rotate a box by an angle
+		angles are always measured in radians
+		
+		the center of rotation is defined by the mean of the vertices
+		the axis of rotation is the line passing through the center,
+		 parallel to the edges of the box
+		"""
 	
 		vs=np.array(self.vertices)
 	
@@ -280,12 +327,12 @@ class Box(Shape):
 		"""
 		display a box, must pass matploltib axes as argument 
 		"""
-		xlim=kwargs.get('plot_xlim', [np.min(self.data.x), np.max(self.data.x)])
-		ylim=kwargs.get('plot_ylim', [np.min(self.data.y), np.max(self.data.y)])
+		xlim=kwargs.get('plot_xlim', [np.min(self.data[0]), np.max(self.data[0])])
+		ylim=kwargs.get('plot_ylim', [np.min(self.data[1]), np.max(self.data[1])])
 		ax1= kwargs.get('ax', plt.gca())
 		size=kwargs.get('size', 0.1)
 		if not kwargs.get('only_shape', True):
-			 ax1.plot(self.data.x, self.data.y, 'k.', ms=size)
+			 ax1.plot(self.data[0], self.data[1], 'k.', ms=size)
 		patch =patches.PathPatch(self.spath, 
 						facecolor=self.color, 
 							alpha=self.alpha, 
