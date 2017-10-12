@@ -298,7 +298,7 @@ class Box(Shape):
 		r=[[np.cos(ang), -np.sin(ang)],
 			 [np.sin(ang), np.cos(ang)]]
 	
-		c=kwargs.get('center', (np.nanmean(vs[:,0]), np.nanmean(vs[:,1])))
+		c=kwargs.get('center', self.center)
 	
 	
 		i=np.identity(2)
