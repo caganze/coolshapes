@@ -37,6 +37,7 @@ class Shape(object):
 		self.color=kwargs.get('color', 'r')
 		self.alpha=kwargs.get('alpha', 0.3)
 		self.linewidth=kwargs.get('lw', 2)
+		self.linestyle=kwargs.get('linestyle', '--')
 		#self.angle=kwargs.get('angle', 0.0)
 		self.edgecolor=kwargs.get('color', 'k')
 		self.xspt_range=kwargs.get('xspt_range', []) #x-range for all objects in that spt_range
@@ -337,7 +338,8 @@ class Box(Shape):
 						facecolor=self.color, 
 							alpha=self.alpha, 
 							edgecolor=self.edgecolor, 
-							linewidth=self.linewidth)
+							linewidth=self.linewidth
+							linestyle=self.linestyle)
 		ax1.add_patch(patch)
 		if kwargs.get('set_limits', False):
 			 ax1.set_xlim(xlim)
