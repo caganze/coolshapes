@@ -338,7 +338,7 @@ class Box(Shape):
 						facecolor=self.color, 
 							alpha=self.alpha, 
 							edgecolor=self.edgecolor, 
-							linewidth=self.linewidth
+							linewidth=self.linewidth,
 							linestyle=self.linestyle)
 		ax1.add_patch(patch)
 		if kwargs.get('set_limits', False):
