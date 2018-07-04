@@ -204,10 +204,16 @@ class Box(Shape):
 		"""
 		if not self._data_type=='contam':
 			#fit a line to the data
-			x=input[0]
-			y=input[1]
+			if isinstance(input, pd.DataFrame):
+				x=input.ix[:,0].astype(float).as_matrix()
+				y=input.ix[:,1].astype(float).as_matrix()
+			else: 
+				x=input[0]
+				y=input[1]
+				
 			x_max=np.nanmax(x)
 			x_min=np.nanmin(x)
+			#print(x, y)
 			
 			if np.nanmedian(x)+ 3.0*np.nanstd(x) <= x_max:
 				x_max= np.nanmedian(x)+ 3.0*np.nanstd(x)
@@ -235,7 +241,7 @@ class Box(Shape):
 			v3=(x_max,	ys_below[1])
 			
 			self.vertices=[v1, v2, v3, v4, v1]
-			self._data=input
+			self._data=np.array([x, y])
 			self._scatter=scatter
 			self._pol=pol
 			self._coeffs=coeffs
@@ -334,12 +340,20 @@ class Box(Shape):
 		size=kwargs.get('size', 0.1)
 		if not kwargs.get('only_shape', True):
 			 ax1.plot(self.data[0], self.data[1], 'k.', ms=size)
+			 
+		if kwargs.get('highlight', False):
+			self.linewidth=3.5
+			self.linestyle='-'
+			self.edgecolor='#111111'
+			self.alpha=5.0
+			 
 		patch =patches.PathPatch(self.spath, 
 						facecolor=self.color, 
 							alpha=self.alpha, 
 							edgecolor=self.edgecolor, 
 							linewidth=self.linewidth,
 							linestyle=self.linestyle)
+							
 		ax1.add_patch(patch)
 		if kwargs.get('set_limits', False):
 			 ax1.set_xlim(xlim)
