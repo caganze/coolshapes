@@ -34,7 +34,7 @@ class Shape(object):
 	def __init__(self, **kwargs):
 		self.xrange=kwargs.get('xrange', [])
 		self.yrange=kwargs.get('yrange', [])
-		self.color=kwargs.get('color', 'r')
+		self._color=kwargs.get('color', None)
 		self.alpha=kwargs.get('alpha', 0.3)
 		self.linewidth=kwargs.get('lw', 2)
 		self.linestyle=kwargs.get('linestyle', '--')
@@ -58,6 +58,15 @@ class Shape(object):
 	@shapetype.setter
 	def shapetype(self, s_type):
 		self._shapetype=s_type
+		
+	#make it ok to change the color 
+	@abstractproperty
+	def color(self):
+		return self._color
+		
+	@color.setter
+	def color(self, new_color):
+		self._color=new_color
 		
 	@abstractproperty
 	def spath(self):
@@ -346,7 +355,10 @@ class Box(Shape):
 			self.linestyle='-'
 			self.edgecolor='#111111'
 			self.alpha=5.0
-			 
+			#self.color='none'
+		
+		#self.color=None
+		print ('selfcolor', self.color)
 		patch =patches.PathPatch(self.spath, 
 						facecolor=self.color, 
 							alpha=self.alpha, 
