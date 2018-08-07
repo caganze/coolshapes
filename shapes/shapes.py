@@ -367,6 +367,9 @@ class Box(Shape):
 							linestyle=self.linestyle)
 							
 		ax1.add_patch(patch)
+		label=kwargs.get('label', None)
+		if label is not None: 
+			ax1.text(self.center[0], self.center[1]+self._scatter, label, fontsize=15, rotation=360-self.angle*57.2958, color='#111111')
 		if kwargs.get('set_limits', False):
 			 ax1.set_xlim(xlim)
 			 ax1.set_ylim(ylim)
