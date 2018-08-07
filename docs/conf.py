@@ -22,7 +22,6 @@
 project = 'shapes'
 copyright = '2018, caganze'
 author = 'caganze'
-sys.path='/users/caganze/research/shapes/'
 
 # The short X.Y version
 version = ''
