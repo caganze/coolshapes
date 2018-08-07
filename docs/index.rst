@@ -10,6 +10,9 @@ Welcome to shapes's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+.. automodule:: shapes
+   :members:
+
 
 
 Indices and tables
