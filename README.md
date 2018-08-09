@@ -6,8 +6,7 @@
 A tool for manipulating shapes inside a 2-d plot
 
 installation  
-``` pip install wispshapes  
-```
+`pip install wispshapes  `
 
 [Tutorial](https://github.com/caganze/wispshapes/blob/master/examples/tutorial.ipynb)
 
