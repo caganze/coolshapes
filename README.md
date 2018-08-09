@@ -10,4 +10,4 @@ installation
 
 [Tutorial](https://github.com/caganze/wispshapes/blob/master/examples/tutorial.ipynb)
 
-[working on documentation ](https://wispshapes.readthedocs.io/en/latest/)
+[working on documentation ](https://caganze.github.io/wispshapes/)
