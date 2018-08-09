@@ -28,11 +28,9 @@ import copy
 
 
 class Shape(object):
-	
 	__metaclass__=ABCMeta
-	
 	def __init__(self, **kwargs):
-		self.xrange=kwargs.get('xrange', [])
+		self.xrange=kwargs.get('xrange', []) #the range
 		self.yrange=kwargs.get('yrange', [])
 		self._color=kwargs.get('color', None)
 		self.alpha=kwargs.get('alpha', 0.3)
@@ -40,8 +38,8 @@ class Shape(object):
 		self.linestyle=kwargs.get('linestyle', '--')
 		#self.angle=kwargs.get('angle', 0.0)
 		self.edgecolor=kwargs.get('color', 'k')
-		self.xspt_range=kwargs.get('xspt_range', []) #x-range for all objects in that spt_range
-		self.yspt_range=kwargs.get('yspt_range', [])
+		#self.xspt_range=kwargs.get('xspt_range', []) #x-range for all objects in that spt_range
+		#self.yspt_range=kwargs.get('yspt_range', [])
 		self.spt_name=kwargs.get('spt_range', ' ') #name of the spectral type range
 		#self.vertices=kwargs.get('vertices', [])
 		self.codes=[Path.MOVETO, Path.LINETO,Path.LINETO,Path.LINETO,Path.CLOSEPOLY]
@@ -112,12 +110,7 @@ class BadVerticesFormatError(Exception):
 	pass
 
 class Box(Shape):
-	"""This class docstring shows how to use sphinx and rst syntax
-
-    The first line is brief explanation, which may be completed with 
-    a longer one. For instance to discuss about its methods. The only
-    method here is :func:`function1`'s. The main idea is to document
-    the class and methods's arguments with 
+	"""This is a box object
 
     - **parameters**, **types**, **return** and **return types**::
 
