@@ -1,4 +1,4 @@
-[![N|Solid](https://travis-ci.org/caganze/shapes.svg?branch=master)](https://travis-ci.org/caganze/shapes/)
+[![N|Solid](https://travis-ci.org/caganze/shapes.svg?branch=master)](https://travis-ci.org/caganze/wispshapes/)
 [![Documentation Status](https://readthedocs.org/projects/wispshapes/badge/?version=latest)](https://wispshapes.readthedocs.io/en/latest/?badge=latest)
 
 # shapes

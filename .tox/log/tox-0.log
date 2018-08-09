@@ -1,0 +1,39 @@
+actionid: tox
+msg: packaging
+cmdargs: ['/anaconda3/bin/python', local('/Users/caganze/research/shapes/setup.py'), 'sdist', '--formats=zip', '--dist-dir', local('/Users/caganze/research/shapes/.tox/dist')]
+
+running sdist
+running egg_info
+writing wispshapes.egg-info/PKG-INFO
+writing dependency_links to wispshapes.egg-info/dependency_links.txt
+writing top-level names to wispshapes.egg-info/top_level.txt
+reading manifest file 'wispshapes.egg-info/SOURCES.txt'
+writing manifest file 'wispshapes.egg-info/SOURCES.txt'
+running check
+creating wispshapes-1.0.0
+creating wispshapes-1.0.0/wispshapes
+creating wispshapes-1.0.0/wispshapes.egg-info
+copying files to wispshapes-1.0.0...
+copying README.md -> wispshapes-1.0.0
+copying setup.py -> wispshapes-1.0.0
+copying wispshapes/__init__.py -> wispshapes-1.0.0/wispshapes
+copying wispshapes/core.py -> wispshapes-1.0.0/wispshapes
+copying wispshapes/selector.py -> wispshapes-1.0.0/wispshapes
+copying wispshapes.egg-info/PKG-INFO -> wispshapes-1.0.0/wispshapes.egg-info
+copying wispshapes.egg-info/SOURCES.txt -> wispshapes-1.0.0/wispshapes.egg-info
+copying wispshapes.egg-info/dependency_links.txt -> wispshapes-1.0.0/wispshapes.egg-info
+copying wispshapes.egg-info/top_level.txt -> wispshapes-1.0.0/wispshapes.egg-info
+Writing wispshapes-1.0.0/setup.cfg
+creating '.tox/dist/wispshapes-1.0.0.zip' and adding 'wispshapes-1.0.0' to it
+adding 'wispshapes-1.0.0/PKG-INFO'
+adding 'wispshapes-1.0.0/README.md'
+adding 'wispshapes-1.0.0/setup.py'
+adding 'wispshapes-1.0.0/setup.cfg'
+adding 'wispshapes-1.0.0/wispshapes/selector.py'
+adding 'wispshapes-1.0.0/wispshapes/__init__.py'
+adding 'wispshapes-1.0.0/wispshapes/core.py'
+adding 'wispshapes-1.0.0/wispshapes.egg-info/PKG-INFO'
+adding 'wispshapes-1.0.0/wispshapes.egg-info/SOURCES.txt'
+adding 'wispshapes-1.0.0/wispshapes.egg-info/top_level.txt'
+adding 'wispshapes-1.0.0/wispshapes.egg-info/dependency_links.txt'
+removing 'wispshapes-1.0.0' (and everything under it)
