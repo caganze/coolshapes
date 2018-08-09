@@ -1,5 +1,5 @@
 import numpy as np
-import shapes
+import wispshapes as shapes
 import numpy as np
 import pandas as pd
 import pytest

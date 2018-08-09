@@ -5,4 +5,4 @@
 A tool for manipulating shapes inside a 2-d plot
 
 
-[working on documentation ](https://caganze.github.io/shapes/#)
+[working on documentation ](https://caganze.github.io/wispshapes/#)
