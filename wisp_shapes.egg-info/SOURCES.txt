@@ -1,9 +1,0 @@
-README.md
-setup.py
-shapes/__init__.py
-shapes/selector.py
-shapes/shapes.py
-wisp_shapes.egg-info/PKG-INFO
-wisp_shapes.egg-info/SOURCES.txt
-wisp_shapes.egg-info/dependency_links.txt
-wisp_shapes.egg-info/top_level.txt
