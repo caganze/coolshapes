@@ -6,4 +6,4 @@
 A tool for manipulating shapes inside a 2-d plot
 
 
-[working on documentation ](https://readthedocs.org/projects/wispshapes/)
+[working on documentation ](https://wispshapes.readthedocs.io/en/latest/)
