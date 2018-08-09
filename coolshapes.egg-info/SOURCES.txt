@@ -1,9 +1,0 @@
-README.md
-setup.py
-coolshapes/__init__.py
-coolshapes/selector.py
-coolshapes/shapes.py
-coolshapes.egg-info/PKG-INFO
-coolshapes.egg-info/SOURCES.txt
-coolshapes.egg-info/dependency_links.txt
-coolshapes.egg-info/top_level.txt

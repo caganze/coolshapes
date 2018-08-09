@@ -1,0 +1,9 @@
+README.md
+setup.py
+wispshapes/__init__.py
+wispshapes/selector.py
+wispshapes/shapes.py
+wispshapes.egg-info/PKG-INFO
+wispshapes.egg-info/SOURCES.txt
+wispshapes.egg-info/dependency_links.txt
+wispshapes.egg-info/top_level.txt
