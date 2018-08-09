@@ -1,0 +1,12 @@
+#ignore figures and tables and spectra
+.DS_Store
+—init—.py
+figures/
+notebooks/
+data/
+*.pyc
+*~
+*.swp
+.ipynb_checkpoints
+.DS_Store
+.cache
