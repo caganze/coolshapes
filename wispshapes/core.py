@@ -95,11 +95,13 @@ class Shape(object):
 			
 		if isinstance(data, pd.DataFrame):
 			data.columns=['x', 'y']
-			bools=self._select(np.array([data['x'].as_matrix(), data['y'].as_matrix()]))[1]
+			bools=self._select(np.array([data['x'].values, data['y'].values]))[1]
 			sels=data[bools]
 
+		#print (data)
 		if (len(data) !=0) and (not isinstance(data, pd.DataFrame)):
 			sels=self._select(data)[0]
+
 			
 		return sels
 		
@@ -240,8 +242,8 @@ class Box(Shape):
 		if not self._data_type=='contam':
 			#fit a line to the data
 			if isinstance(input, pd.DataFrame):
-				x=input.ix[:,0].astype(float).as_matrix()
-				y=input.ix[:,1].astype(float).as_matrix()
+				x=input.ix[:,0].astype(float).values
+				y=input.ix[:,1].astype(float).values
 			else: 
 				x=input[0]
 				y=input[1]

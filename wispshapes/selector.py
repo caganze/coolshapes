@@ -89,6 +89,31 @@ class Selector(object):
 	@shapes.setter
 	def shapes(self, new_shapes):
 		self._shapes=new_shapes
+		data= np.array([s.data for s in self.shapes])
+		#print ('concatenating ....')
+	
+		if isinstance(data, list) and isinstance(data[0], pd.DataFrame):
+			data=pd.concat(data).reset_index(drop=True)
+			data.columns=['x', 'y']
+			self._data=data
+
+		#if the input is a nested list of numpy arrays
+		if isinstance(data, (np.ndarray, np.generic)) and isinstance(data[0], (np.ndarray, np.generic)):
+			#transform this into one dataframe
+			#concatenate all the lists and create a numpy array
+			data=np.concatenate(data).T
+			x=data[:, 0]
+			y=data[:, 1]
+			#print ('x', x)
+			data=pd.DataFrame(np.array([x, y])).transpose()
+			data.columns=['x', 'y']
+			self._data=data
+
+		if isinstance(data, (np.ndarray, np.generic)) and isinstance(data[0], float):
+			data=pd.DataFrame(np.array([data[0], data[1]])).transpose()
+			data.columns=['x', 'y']
+			self._data=data
+
 		
 	def select(self, **kwargs):
 		"""
@@ -97,38 +122,34 @@ class Selector(object):
 		"""
 		shapes=kwargs.get('shapes', self.shapes)
 		_logic=kwargs.get('logic', self._logic)
-
-		print ('concatenating ....')
-		data=kwargs.get('data', pd.concat([s.data for s in shapes]).reset_index(drop=True))
-		
 		if not isinstance(_logic, str) or _logic not in ['and', 'or']:
 			raise ValueError(""" Logic must 'and' or 'or' """)
 		
-		print ('creating points ....')
+		#print ('creating points ....')
 		
 		#points=list(data.apply(tuple, axis=1))
     
 		selected=[]
 		#print(data)
-		print ('selecting ....')
+		#print ('selecting ....')
 		
 		for s in shapes:
-			selected.append(list(s.select(data).index))
-		
+			selected.append(list(s.select(self.data).index))
+
 		result=None
 		result_index=None
 		
 		#print(selected)
+		#print (type(selected))
+
 		if _logic =='and':
 			result_index=set.intersection(*map(set,selected))
 		if _logic=='or':
 			result_index=set().union(*selected)
 		
-		result=data.ix[result_index].drop_duplicates()
+		result=self.data.ix[result_index].drop_duplicates()
 		
-		self._data=result
-		self._shapes=shapes
-	
+		
 		return result
 		
 		
