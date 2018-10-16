@@ -155,7 +155,7 @@ class Box(Shape):
 		self._vertices=None
 		self._angle=None
 		self._coeffs=None
-		
+		self.scatter_coeff=kwargs.get('scoeff', 1.5)
 	def __repr__(self):
 		return 'box'
 
@@ -265,7 +265,7 @@ class Box(Shape):
 			
 			ys=pol([x_min, x_max])
 			
-			scatter= 1.5* np.sqrt(np.sum((y- pol(x))**2)/len(x))
+			scatter= self.scatter_coeff* np.sqrt(np.sum((y- pol(x))**2)/len(x))
 			
 			#print ('x_max {}  x_min {} scatter {}'.format(x_max, x_min, scatter))
 			ys_above= ys+scatter
