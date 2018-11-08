@@ -10,3 +10,6 @@ data/
 .ipynb_checkpoints
 .DS_Store
 .cache
+build/
+.pytest_cache/v/cache
+.toxgit 
