@@ -238,16 +238,41 @@ class Box(Shape):
 	def data(self, input):
 		"""
 		input must be a 2d-numpy array
+		x is assumed to be data[0]
+		y is assumed tp be data[1]
+		xerr is data[2] etc.
+		similar assumptions are made about yerr 
 		"""
 		if not self._data_type=='contam':
 			#fit a line to the data
 			if isinstance(input, pd.DataFrame):
 				x=input.ix[:,0].astype(float).values
 				y=input.ix[:,1].astype(float).values
+				#if no error arrays are given, assume gaussian
+				if input.shape[1] ==2:
+					xerr=np.zeros(len(x)) #i don't use this anyway
+					mu=np.nanmean(y)
+					sigma=np.nanstd(y)
+					yerr= np.random.normal(mu, sigma, len(y))
+				#otherwise, retrieve the values
+				else:
+					xerr=input.ix[:,2].astype(float).values
+					yerr=input.ix[:,3].astype(float).values
+
 			else: 
 				x=input[0]
 				y=input[1]
-				
+				#if no error arrays are given, assume zero
+				if input.shape[1] ==2:
+					xerr=np.zeros(len(x)) #i don't use this much
+					mu=np.nanmean(y)
+					sigma=np.nanstd(y)
+					yerr= np.random.normal(mu, sigma, len(y))
+				#otherwise, retrieve the values
+				else:
+					xerr=input.ix[2]
+					yerr=input.ix[3]
+
 			x_max=np.nanmax(x)
 			x_min=np.nanmin(x)
 			#print(x, y)
@@ -258,8 +283,15 @@ class Box(Shape):
 			if	np.nanmedian(x)-3.0*np.nanstd(x) > x_min:
 				x_min= np.nanmedian(x)-3.0*np.nanstd(x)
 			
-			coeffs = np.polyfit(x, y, 1)
-			pol= np.poly1d(coeffs)
+			#use matrix algebra to determine the best fit line given uncertainties
+			Y = y.reshape(-1,1)
+			A = np.vstack((np.ones_like(x), x)).T
+			C = np.diag(yerr**2)
+
+			X = np.linalg.inv(A.transpose()@np.linalg.inv(C)@A) @ (A.transpose()@np.linalg.inv(C)@Y)
+
+			pol = np.poly1d(X[::-1,0])
+			coeffs = X[::-1,0]
 			
 			dx= x_max-x_min
 			
@@ -382,7 +414,7 @@ class Box(Shape):
 			self.linewidth=3.5
 			self.linestyle='-'
 			self.edgecolor='#111111'
-			self.alpha=5.0
+			self.alpha=self.alpha*3.0
 			#self.color='none'
 		
 		#self.color=None

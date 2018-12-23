@@ -18,7 +18,7 @@ Description: [![N|Solid](https://travis-ci.org/caganze/shapes.svg?branch=master)
         
         [Tutorial](https://github.com/caganze/wispshapes/blob/master/examples/tutorial.ipynb)
         
-        [working on documentation ](https://wispshapes.readthedocs.io/en/latest/)
+        [working on documentation ](https://caganze.github.io/wispshapes/)
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
