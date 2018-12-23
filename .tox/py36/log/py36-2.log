@@ -1,5 +1,0 @@
-actionid: py36
-msg: envreport
-cmdargs: '/Users/caganze/research/wispshapes/.tox/py36/bin/python -m pip freeze'
-
-wispshapes==1.0.0

@@ -1,9 +1,0 @@
-actionid: py36
-msg: getenv
-cmdargs: '/anaconda3/bin/python -m virtualenv --python /anaconda3/bin/python py36'
-
-Already using interpreter /anaconda3/bin/python
-Using base prefix '/anaconda3'
-New python executable in /Users/caganze/research/wispshapes/.tox/py36/bin/python
-Installing setuptools, pip, wheel...
-done.
