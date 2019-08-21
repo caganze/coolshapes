@@ -145,7 +145,7 @@ class Box(Shape):
 	"""
 	def __init__(self, **kwargs):
 		super().__init__()
-		self.shapetype='box'
+		self.shapetype=kwargs.get('shapetype', 'box')
 		self.completeness=kwargs.get('completeness',0.85)
 		self.contamination=np.nan
 		self._data=None # a pandas object with two or more columns (should have x and y	 for directions)
@@ -263,45 +263,56 @@ class Box(Shape):
 				x=input[0]
 				y=input[1]
 				#if no error arrays are given, assume zero
-				if input.shape[1] ==2:
+				if input.shape[0] ==2:
 					xerr=np.zeros(len(x)) #i don't use this much
 					mu=np.nanmean(y)
 					sigma=np.nanstd(y)
 					yerr= np.random.normal(mu, sigma, len(y))
 				#otherwise, retrieve the values
 				else:
-					xerr=input.ix[2]
-					yerr=input.ix[3]
+					xerr=input[2]
+					yerr=input[3]
 
-			x_max=np.nanmax(x)
-			x_min=np.nanmin(x)
-			#print(x, y)
-			
-			if np.nanmedian(x)+ 3.0*np.nanstd(x) <= x_max:
-				x_max= np.nanmedian(x)+ 3.0*np.nanstd(x)
-			
-			if	np.nanmedian(x)-3.0*np.nanstd(x) > x_min:
-				x_min= np.nanmedian(x)-3.0*np.nanstd(x)
+			x_max=np.nanmean(x)+3.*np.nanstd(x)
+			x_min=np.nanmean(x)-3.*np.nanstd(x)
+
+			if x_max> np.nanmax(x):
+				x_max= np.nanmax(x)+(np.nanmax(x)-np.nanmin(x))*0.02
+
+			if x_min < np.nanmin(x):
+				x_min=np.nanmin(x)-(np.nanmax(x)-np.nanmin(x))*0.02
+
+			y_max=np.nanmean(y)+1.5*np.nanstd(y)
+			y_min=np.nanmean(y)-1.5*np.nanstd(y)
+
+			mask1=np.logical_and(y<y_max, y>y_min)
+			mask2=np.logical_and(x<x_max, x>x_min)
 			
 			#use matrix algebra to determine the best fit line given uncertainties
-			Y = y.reshape(-1,1)
-			A = np.vstack((np.ones_like(x), x)).T
-			C = np.diag(yerr**2)
+			#Y = y.reshape(-1,1)
+			#A = np.vstack((np.ones_like(x), x)).T
+			#C = np.diag(yerr**2)
 
-			X = np.linalg.inv(A.transpose()@np.linalg.inv(C)@A) @ (A.transpose()@np.linalg.inv(C)@Y)
+			#X = np.linalg.inv(A.transpose()@np.linalg.inv(C)@A) @ (A.transpose()@np.linalg.inv(C)@Y)
+			#if the user asks for a reactangle then give them a reactangle
+			if self.shapetype=='box':
 
-			pol = np.poly1d(X[::-1,0])
-			coeffs = X[::-1,0]
+				pol = np.poly1d(np.polyfit(x[mask2], y[mask2], 1))
+
+			if self.shapetype =='rectangle':
+				pol=np.poly1d(np.polyfit(x[mask2], np.ones_like(y[mask2])*np.nanmedian(y[mask2]), 1))
 			
+			coeffs = pol.coefficients
 			dx= x_max-x_min
-			
+			dy=y_max-y_min
 			ys=pol([x_min, x_max])
-			
-			scatter= self.scatter_coeff* np.sqrt(np.sum((y- pol(x))**2)/len(x))
+
+
+			scatter= self.scatter_coeff* np.nansum(np.sqrt((y[mask2]- pol(x[mask2]))**2)/len(x[mask2]))
 			
 			#print ('x_max {}  x_min {} scatter {}'.format(x_max, x_min, scatter))
-			ys_above= ys+scatter
-			ys_below=ys-scatter
+			ys_above= ys+3.*scatter
+			ys_below=ys-3.*scatter
 			
 			#print ('ys above {} ys below {}'.format(ys_above, ys_below))
 			v1= (x_min, ys_above[0])
@@ -409,19 +420,20 @@ class Box(Shape):
 		size=kwargs.get('size', 0.1)
 		if not kwargs.get('only_shape', True):
 			 ax1.plot(self.data[0], self.data[1], 'k.', ms=size)
-			 
+		
+		alpha=self.alpha
 		if kwargs.get('highlight', False):
 			self.linewidth=3.5
 			self.linestyle='-'
 			self.edgecolor='#111111'
-			self.alpha=self.alpha*3.0
+			alpha=self.alpha*3.0
 			#self.color='none'
 		
 		#self.color=None
-		print ('selfcolor', self.color)
+		#print ('selfcolor', self.color)
 		patch =patches.PathPatch(self.spath, 
 						facecolor=self.color, 
-							alpha=self.alpha, 
+							alpha=alpha, 
 							edgecolor=self.edgecolor, 
 							linewidth=self.linewidth,
 							linestyle=self.linestyle)
@@ -433,6 +445,7 @@ class Box(Shape):
 		if kwargs.get('set_limits', False):
 			 ax1.set_xlim(xlim)
 			 ax1.set_ylim(ylim)
+
 			 
 
 class RotatedBox(Box):
