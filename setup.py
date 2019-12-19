@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="wispshapes",
-    version="1.0.0",
+    name="shapey",
+    version="1.1.0",
     author="caganze",
     author_email="caganze@gmail.com",
     description=" package to draw boxes in 2d plots",

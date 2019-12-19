@@ -273,20 +273,32 @@ class Box(Shape):
 					xerr=input[2]
 					yerr=input[3]
 
-			x_max=np.nanmean(x)+3.*np.nanstd(x)
-			x_min=np.nanmean(x)-3.*np.nanstd(x)
+			x_max=np.nanmedian(x)+3.*np.nanstd(x)
+			x_min=np.nanmedian(x)-3.*np.nanstd(x)
+
+			y_max=np.nanmedian(y)+3.*np.nanstd(y)
+			y_min=np.nanmedian(y)-3.*np.nanstd(y)
+
+			dx=x_max-x_min
+			dy=y_max-y_min
 
 			if x_max> np.nanmax(x):
-				x_max= np.nanmax(x)+(np.nanmax(x)-np.nanmin(x))*0.02
+				x_max= np.nanmax(x)
 
 			if x_min < np.nanmin(x):
-				x_min=np.nanmin(x)-(np.nanmax(x)-np.nanmin(x))*0.02
+				x_min=np.nanmin(x)
 
-			y_max=np.nanmean(y)+1.5*np.nanstd(y)
-			y_min=np.nanmean(y)-1.5*np.nanstd(y)
+			if y_max> np.nanmax(y):
+				y_max= np.nanmax(y)
 
-			mask1=np.logical_and(y<y_max, y>y_min)
-			mask2=np.logical_and(x<x_max, x>x_min)
+			if y_min < np.nanmin(y):
+				y_min=np.nanmin(y)
+
+			#x_max=x_max+0.001*dx
+			#x_min=x_min+0.02*dx
+
+			mask1=np.logical_and(x>x_min, x<x_max)
+			mask2=np.logical_and(y>y_min, y<y_max)
 			
 			#use matrix algebra to determine the best fit line given uncertainties
 			#Y = y.reshape(-1,1)
@@ -303,16 +315,14 @@ class Box(Shape):
 				pol=np.poly1d(np.polyfit(x[mask2], np.ones_like(y[mask2])*np.nanmedian(y[mask2]), 1))
 			
 			coeffs = pol.coefficients
-			dx= x_max-x_min
-			dy=y_max-y_min
 			ys=pol([x_min, x_max])
 
 
 			scatter= self.scatter_coeff* np.nansum(np.sqrt((y[mask2]- pol(x[mask2]))**2)/len(x[mask2]))
 			
 			#print ('x_max {}  x_min {} scatter {}'.format(x_max, x_min, scatter))
-			ys_above= ys+3.*scatter
-			ys_below=ys-3.*scatter
+			ys_above= ys+0.4*dy
+			ys_below=ys-0.4*dy
 			
 			#print ('ys above {} ys below {}'.format(ys_above, ys_below))
 			v1= (x_min, ys_above[0])
