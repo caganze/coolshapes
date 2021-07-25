@@ -28,6 +28,24 @@ import copy
 
 
 class Shape(object):
+	"""
+    Main class 
+
+    Extended description of function.
+
+    Parameters
+    ----------
+    arg1 : int
+        Description of arg1
+    arg2 : str
+        Description of arg2
+
+    Returns
+    -------
+    int
+        Description of return value
+
+    """
 	__metaclass__=ABCMeta
 	def __init__(self, **kwargs):
 		self.xrange=kwargs.get('xrange', []) #the range
@@ -72,8 +90,23 @@ class Shape(object):
 	
 	def _select(self, data):
 		"""
-		this only works with numpy array for convenience
-		"""
+	    Summary line.
+
+	    Extended description of function.
+
+	    Parameters
+	    ----------
+	    arg1 : int
+	        Description of arg1
+	    arg2 : str
+	        Description of arg2
+
+	    Returns
+	    -------
+	    int
+	        Description of return value
+
+	    """
 		if self.__repr__ =='oval':
 			bools=self.ellipse.contains_points(list(map(tuple, data.T)), transform=None, radius=0.0) 
 		if not self.__repr__=='oval':
@@ -85,10 +118,23 @@ class Shape(object):
 
 	def select(self, data):
 		"""
-		 selects a list of points inside shape
-		 If data is an array, returns array
-		 If data is a pandas dataframe, returns dataframe
-		"""
+	    Summary line.
+
+	    Extended description of function.
+
+	    Parameters
+	    ----------
+	    arg1 : int
+	        Description of arg1
+	    arg2 : str
+	        Description of arg2
+
+	    Returns
+	    -------
+	    int
+	        Description of return value
+
+	    """
 		sels=None
 		if len(data)==0:
 			raise ValueError('Please pass some data lol')
@@ -112,37 +158,24 @@ class BadVerticesFormatError(Exception):
 	pass
 
 class Box(Shape):
-	"""This is a box object
-
-    - **parameters**, **types**, **return** and **return types**::
-
-          :param arg1: description
-          :param arg2: description
-          :type arg1: type description
-          :type arg1: type description
-          :return: return description
-          :rtype: the return type description
-
-    - and to provide sections such as **Example** using the double commas syntax::
-
-          :Example:
-
-          followed by a blank line !
-
-      which appears as follow:
-
-      :Example:
-
-      followed by a blank line
-
-    - Finally special sections such as **See Also**, **Warnings**, **Notes**
-      use the sphinx syntax (*paragraph directives*)::
-
-          .. seealso:: blabla
-          .. warnings also:: blabla
-          .. note:: blabla
-          .. todo:: blabla
 	"""
+    Summary line.
+
+    Extended description of function.
+
+    Parameters
+    ----------
+    arg1 : int
+        Description of arg1
+    arg2 : str
+        Description of arg2
+
+    Returns
+    -------
+    int
+        Description of return value
+
+    """
 	def __init__(self, **kwargs):
 		super().__init__()
 		self.shapetype=kwargs.get('shapetype', 'box')
@@ -156,6 +189,7 @@ class Box(Shape):
 		self._angle=None
 		self._coeffs=None
 		self.scatter_coeff=kwargs.get('scoeff', 1.5)
+		self.xshift=kwargs.get('xshift', 0.1)
 	def __repr__(self):
 		return 'box'
 
@@ -169,8 +203,23 @@ class Box(Shape):
 	@property 
 	def center(self):
 		"""
-		center of a box, based on the median of xrnage and yrange
-		"""
+	    Summary line.
+
+	    Extended description of function.
+
+	    Parameters
+	    ----------
+	    arg1 : int
+	        Description of arg1
+	    arg2 : str
+	        Description of arg2
+
+	    Returns
+	    -------
+	    int
+	        Description of return value
+
+	    """
 		vs=np.array(self.vertices)
 		return (np.nanmean(vs[:,0]), np.nanmean(vs[:,1]))
 
@@ -294,8 +343,9 @@ class Box(Shape):
 			if y_min < np.nanmin(y):
 				y_min=np.nanmin(y)
 
-			#x_max=x_max+0.001*dx
-			#x_min=x_min+0.02*dx
+			#add fudge factor to xlimits
+			x_max=x_max+self.xshift*dx 
+			x_min=x_min-self.xshift*dx
 
 			mask1=np.logical_and(x>x_min, x<x_max)
 			mask2=np.logical_and(y>y_min, y<y_max)

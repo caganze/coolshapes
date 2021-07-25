@@ -1,5 +1,5 @@
 import numpy as np
-import wispshapes as shapes
+import shapey
 import numpy as np
 import pandas as pd
 import pytest
@@ -58,7 +58,7 @@ import numpy.testing as npt
 
 
 def test_box():
-	b1=shapes.Box()
+	b1=shapey.Box()
 	b1.data=df
 	b2=copy.deepcopy(b1)
 	b2.rotate(np.pi/2)
