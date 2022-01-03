@@ -5,8 +5,8 @@
 
 A tool for manipulating shapes inside a 2-d plot
 
-installation  
-`pip install wispshapes  `
+installation  `python -m pip install git+https://github.com/caganze/shapey.git `
+
 
 [Tutorial](https://github.com/caganze/wispshapes/blob/master/examples/tutorial.ipynb)
 
