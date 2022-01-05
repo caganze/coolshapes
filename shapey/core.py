@@ -474,8 +474,8 @@ class Box(Shape):
 		"""
 		display a box, must pass matploltib axes as argument 
 		"""
-		xlim=kwargs.get('plot_xlim', [np.min(self.data[0]), np.max(self.data[0])])
-		ylim=kwargs.get('plot_ylim', [np.min(self.data[1]), np.max(self.data[1])])
+		xlim=kwargs.get('plot_xlim', [])
+		ylim=kwargs.get('plot_ylim', [])
 		ax1= kwargs.get('ax', plt.gca())
 		size=kwargs.get('size', 0.1)
 		if not kwargs.get('only_shape', True):
@@ -658,8 +658,8 @@ class Oval(Shape):
 
 		ax=kwargs.get('ax', plt.gca())
 
-		xlim=kwargs.get('plot_xlim', [np.min(self._data.x), np.max(self._data.x)])
-		ylim=kwargs.get('plot_ylim', [np.min(self._data.y), np.max(self._data.y)])
+		xlim=kwargs.get('plot_xlim', [])
+		ylim=kwargs.get('plot_ylim', [])
 
 		
 		ax.add_patch(self.ellipse)
