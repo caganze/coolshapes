@@ -12,9 +12,9 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/caganze/easyshapey",
-    packages=setuptools.find_packages(exclude=['docs','tests'], include=['easyshapey'])
-    classifiers=(
+    packages=setuptools.find_packages(exclude=['docs','tests'], include=['easyshapey']),
+    classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent"),
+        "Operating System :: OS Independent"]
 )
