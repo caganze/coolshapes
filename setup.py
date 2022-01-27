@@ -11,8 +11,8 @@ setuptools.setup(
     description=" package to draw boxes in 2d plots",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/caganze/shapey/",
-    packages=setuptools.find_packages(),
+    url="https://github.com/caganze/easyshapey",
+    packages=setuptools.find_packages(exclude=['docs','tests'], include=['easyshapey'])
     classifiers=(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

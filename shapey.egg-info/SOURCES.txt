@@ -1,9 +1,0 @@
-README.md
-setup.py
-shapey/__init__.py
-shapey/core.py
-shapey/selector.py
-shapey.egg-info/PKG-INFO
-shapey.egg-info/SOURCES.txt
-shapey.egg-info/dependency_links.txt
-shapey.egg-info/top_level.txt
