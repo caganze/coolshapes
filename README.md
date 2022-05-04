@@ -10,5 +10,3 @@ or `pip install easyshapey`
 
 
 [Tutorial](https://github.com/caganze/wispshapes/blob/master/examples/tutorial.ipynb)
-
-[working on documentation ](https://caganze.github.io/wispshapes/)
