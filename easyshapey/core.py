@@ -31,20 +31,8 @@ class Shape(object):
 	"""
     Main class 
 
-    Extended description of function.
-
-    Parameters
-    ----------
-    arg1 : int
-        Description of arg1
-    arg2 : str
-        Description of arg2
-
-    Returns
-    -------
-    int
-        Description of return value
-
+    Extended description of function
+  
     """
 	__metaclass__=ABCMeta
 	def __init__(self, **kwargs):
@@ -54,12 +42,7 @@ class Shape(object):
 		self.alpha=kwargs.get('alpha', 0.3)
 		self.linewidth=kwargs.get('lw', 2)
 		self.linestyle=kwargs.get('linestyle', '--')
-		#self.angle=kwargs.get('angle', 0.0)
 		self.edgecolor=kwargs.get('color', 'k')
-		#self.xspt_range=kwargs.get('xspt_range', []) #x-range for all objects in that spt_range
-		#self.yspt_range=kwargs.get('yspt_range', [])
-		self.spt_name=kwargs.get('spt_range', ' ') #name of the spectral type range
-		#self.vertices=kwargs.get('vertices', [])
 		self.codes=[Path.MOVETO, Path.LINETO,Path.LINETO,Path.LINETO,Path.CLOSEPOLY]
 		self._shapetype=None
 		self._coeffs=None
@@ -73,6 +56,9 @@ class Shape(object):
 		
 	@shapetype.setter
 	def shapetype(self, s_type):
+		"""
+		Returns string, shape of object
+		"""
 		self._shapetype=s_type
 		
 	#make it ok to change the color 
@@ -90,21 +76,15 @@ class Shape(object):
 	
 	def _select(self, data):
 		"""
-	    Summary line.
+		Selects by countouring over points
 
-	    Extended description of function.
+	    Args:
+	        data: a 2d- numpy array or pandas dataframe
 
-	    Parameters
-	    ----------
-	    arg1 : int
-	        Description of arg1
-	    arg2 : str
-	        Description of arg2
+	    Returns:
+	       selected data and boolean values for selecting data
 
-	    Returns
-	    -------
-	    int
-	        Description of return value
+	    Raises:
 
 	    """
 		if self.__repr__ =='oval':
@@ -118,21 +98,13 @@ class Shape(object):
 
 	def select(self, data):
 		"""
-	    Summary line.
+		Selects by countouring over points
 
-	    Extended description of function.
+	    Args:
+	        data: a 2d- numpy array or pandas dataframe
 
-	    Parameters
-	    ----------
-	    arg1 : int
-	        Description of arg1
-	    arg2 : str
-	        Description of arg2
-
-	    Returns
-	    -------
-	    int
-	        Description of return value
+	    Returns:
+	       selected data and boolean values for selecting data
 
 	    """
 		sels=None
@@ -188,7 +160,7 @@ class Box(Shape):
 		self._vertices=None
 		self._angle=None
 		self._coeffs=None
-		self.scatter_coeff=kwargs.get('scoeff', 1.5)
+		self.sigma=kwargs.get('sigma', 1)
 		self.xshift=kwargs.get('xshift', 0.1)
 	def __repr__(self):
 		return 'box'
@@ -295,53 +267,31 @@ class Box(Shape):
 		if not self._data_type=='contam':
 			#fit a line to the data
 			if isinstance(input, pd.DataFrame):
-				x=input.ix[:,0].astype(float).values
-				y=input.ix[:,1].astype(float).values
-				#if no error arrays are given, assume gaussian
-				if input.shape[1] ==2:
-					xerr=np.zeros(len(x)) #i don't use this anyway
-					mu=np.nanmean(y)
-					sigma=np.nanstd(y)
-					yerr= np.random.normal(mu, sigma, len(y))
-				#otherwise, retrieve the values
-				else:
-					xerr=input.ix[:,2].astype(float).values
-					yerr=input.ix[:,3].astype(float).values
+				data=input.values.T
+			#else: 
+			x=input[0]
+			y=input[1]
+			#if no error arrays are given, assume zero
+			if input.shape[0] ==2:
+				xerr=np.zeros(len(x)) #i don't use this much
+				mu=np.nanmean(y)
+				sigma=np.nanstd(y)
+				yerr= np.random.normal(mu, sigma, len(y))
+			#otherwise, retrieve the values
+			else:
+				xerr=input[2]
+				yerr=input[3]
 
-			else: 
-				x=input[0]
-				y=input[1]
-				#if no error arrays are given, assume zero
-				if input.shape[0] ==2:
-					xerr=np.zeros(len(x)) #i don't use this much
-					mu=np.nanmean(y)
-					sigma=np.nanstd(y)
-					yerr= np.random.normal(mu, sigma, len(y))
-				#otherwise, retrieve the values
-				else:
-					xerr=input[2]
-					yerr=input[3]
+			#x_max=np.nanmedian(x)+self.sigma*np.nanstd(x)
+			#x_min=np.nanmedian(x)-self.sigma*np.nanstd(x)
+			x_min=np.nanmin(x)
+			x_max=np.nanmax(x)
 
-			x_max=np.nanmedian(x)+3.*np.nanstd(x)
-			x_min=np.nanmedian(x)-3.*np.nanstd(x)
-
-			y_max=np.nanmedian(y)+3.*np.nanstd(y)
-			y_min=np.nanmedian(y)-3.*np.nanstd(y)
+			y_max=np.nanmedian(y)+self.sigma*np.nanstd(y)
+			y_min=np.nanmedian(y)-self.sigma*np.nanstd(y)
 
 			dx=x_max-x_min
 			dy=y_max-y_min
-
-			if x_max> np.nanmax(x):
-				x_max= np.nanmax(x)
-
-			if x_min < np.nanmin(x):
-				x_min=np.nanmin(x)
-
-			if y_max> np.nanmax(y):
-				y_max= np.nanmax(y)
-
-			if y_min < np.nanmin(y):
-				y_min=np.nanmin(y)
 
 			#add fudge factor to xlimits
 			x_max=x_max+self.xshift*dx 
@@ -358,7 +308,6 @@ class Box(Shape):
 			#X = np.linalg.inv(A.transpose()@np.linalg.inv(C)@A) @ (A.transpose()@np.linalg.inv(C)@Y)
 			#if the user asks for a reactangle then give them a reactangle
 			if self.shapetype=='box':
-
 				pol = np.poly1d(np.polyfit(x[mask2], y[mask2], 1))
 
 			if self.shapetype =='rectangle':
@@ -368,18 +317,16 @@ class Box(Shape):
 			ys=pol([x_min, x_max])
 
 
-			scatter= self.scatter_coeff* np.nansum(np.sqrt((y[mask2]- pol(x[mask2]))**2)/len(x[mask2]))
-			
-			#print ('x_max {}  x_min {} scatter {}'.format(x_max, x_min, scatter))
-			ys_above= ys+0.4*dy
-			ys_below=ys-0.4*dy
-			
-			#print ('ys above {} ys below {}'.format(ys_above, ys_below))
+			scatter= self.sigma* np.nansum(np.sqrt((y[mask2]- pol(x[mask2]))**2)/len(x[mask2]))
+
+			ys_above= ys+scatter
+			ys_below=ys-scatter
+
 			v1= (x_min, ys_above[0])
 			v2=(x_max, ys_above[1])
 			v4= (x_min,	 ys_below[0])
 			v3=(x_max,	ys_below[1])
-			
+
 			self.vertices=[v1, v2, v3, v4, v1]
 			self._data=np.array([x, y])
 			self._scatter=scatter
@@ -486,7 +433,7 @@ class Box(Shape):
 			self.linewidth=3.5
 			self.linestyle='-'
 			self.edgecolor='#111111'
-			alpha=self.alpha*3.0
+			#alpha=self.alpha
 			#self.color='none'
 		
 		#self.color=None
